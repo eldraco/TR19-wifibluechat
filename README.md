@@ -1,5 +1,7 @@
 # TR19-bluechat
 
+Version: 0.1
+
 A Bluetooth chat for the Troopers 19 Badge.
 
 Before running ampy, make sure you have connection to your badge, by:
@@ -18,3 +20,7 @@ Before running ampy, make sure you have connection to your badge, by:
     $ ampy -p /dev/tty.SLAB_USBtoUART put TR19-bluechat/apps/bluechat/__init__.py /apps/bluechat/__init__.py
     $ ampy -p /dev/tty.SLAB_USBtoUART put TR19-bluechat/apps/bluechat/info.json /apps/bluechat/info.json
     $ ampy -p /dev/tty.SLAB_USBtoUART put TR19-bluechat/menu.json /menu.json
+
+## Roadmap
+
+    - Version 0.1: Only text in the app
