@@ -66,13 +66,26 @@ class FindOthersScreen(screen.Screen):
         elif nic.isconnected() == False:
             self.display.fill(display.BACKGROUND)
             self.display.text('Not connected... :-(', 0, y=0, wrap=display.WRAP_INDENT,update=True)
+        
+        # Send text
+        self.display.text('Sending...', 0, y=0, wrap=display.WRAP_INDENT,update=True)
+        host = '192.168.4.1'
+	addr = socket.getaddrinfo(host, 80)[0][-1]
+	s = socket.socket()
+	s.connect(addr)
+	s.send(bytes('hola de sebas' % (path, host), 'utf8'))
+        self.display.text('Receiving...', 0, y=10, wrap=display.WRAP_INDENT,update=True)
+	data = s.recv(100)
+        self.display.text(str(data), 0, y=20, wrap=display.WRAP_INDENT,update=True)
 
         # Request page
+        """
         page = http_get('http://192.168.4.1/')
         if page:
             self.display.fill(display.BACKGROUND)
             self.display.text('Page:', 0, y=0, wrap=display.WRAP_INDENT,update=True)
             self.display.text(page, 0, y=10, wrap=display.WRAP_INDENT,update=True)
+        """
 
 
 
