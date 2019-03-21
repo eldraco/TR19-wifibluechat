@@ -2,6 +2,9 @@
 
 import display
 import network
+import system
+import socket
+import time
 
 from system import app, screen, Kernel
 from machine import Pin,I2C
@@ -23,18 +26,55 @@ class StartScreen(screen.Screen):
             return Kernel.ACTION_LOAD_SCREEN, 2
 
 class FindOthersScreen(screen.Screen):
+
+    def http_get(url):
+	_, _, host, path = url.split('/', 3)
+	addr = socket.getaddrinfo(host, 80)[0][-1]
+	s = socket.socket()
+	s.connect(addr)
+	s.send(bytes('GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n' % (path, host), 'utf8'))
+	while True:
+	    data = s.recv(100)
+	    if data:
+		print(str(data, 'utf8'), end='')
+	    else:
+		break
+	s.close()
+
     def update(self):
         self.display.fill(display.BACKGROUND)
-        self.display.text('Finding Others...', 0, y=0, wrap=display.WRAP_INDENT,update=True)
+        self.display.text('Finding the top 5 badges around you...', 0, y=0, wrap=display.WRAP_INDENT,update=True)
 
         # Create the nic object
         nic = network.WLAN(network.STA_IF)
         nic.active(True)
         aps = nic.scan()
-        #self.display.text(aps, 0, y=0, wrap=display.WRAP_INDENT,update=True)
-        for y in range(len(aps)):
-            self.display.text(aps[i][0].decode('utf-8'), 0, y=y, wrap=display.WRAP_INDENT,update=True)
-        #    self.display.text(aps[i][0].decode('utf-8') + '\n', 0, y=y, wrap=display.WRAP_INDENT,update=True)
+        for i in range(len(aps)):
+            text = str(aps[i][0].decode('utf-8'))
+            pos = 10* (i + 1)
+            self.display.text(text, 0, y=pos, wrap=display.WRAP_INDENT,update=True)
+            if i > 3:
+                break
+        # connect
+        nic.connect('latinos-badge', 'chingatumadre')
+        time.sleep(1)
+        if nic.isconnected() == True:
+            self.display.fill(display.BACKGROUND)
+            self.display.text('Connected!', 0, y=0, wrap=display.WRAP_INDENT,update=True)
+            ip = nic.ifconfig()[0]
+            self.display.text(str(ip), 0, y=10, wrap=display.WRAP_INDENT,update=True)
+        elif nic.isconnected() == False:
+            self.display.fill(display.BACKGROUND)
+            self.display.text('Not connected... :-(', 0, y=0, wrap=display.WRAP_INDENT,update=True)
+
+        # Request page
+        page = http_get('http://192.168.4.1/')
+        if page:
+            self.display.fill(display.BACKGROUND)
+            self.display.text('Page:', 0, y=0, wrap=display.WRAP_INDENT,update=True)
+            self.display.text(page, 0, y=10, wrap=display.WRAP_INDENT,update=True)
+
+
 
     def on_text(self,event):
         if event.value is None:

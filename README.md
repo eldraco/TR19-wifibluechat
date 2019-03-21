@@ -14,11 +14,11 @@ Before running ampy, make sure you have connection to your badge, by:
         - Disconnect it from the PC and connect it again
 
 ## Install instructions 
-    $ git clone https://github.com/eldraco/TR19-bluechat.git
+    $ git clone https://github.com/eldraco/TR19-wifibluechat.git
 
     $ ampy -p /dev/tty.SLAB_USBtoUART mkdir /apps/wifibluechat
-    $ ampy -p /dev/tty.SLAB_USBtoUART put TR19-wifibluechat/apps/bluechat/__init__.py /apps/wifibluechat/__init__.py
-    $ ampy -p /dev/tty.SLAB_USBtoUART put TR19-wifibluechat/apps/bluechat/info.json /apps/wifibluechat/info.json
+    $ ampy -p /dev/tty.SLAB_USBtoUART put TR19-wifibluechat/apps/wifibluechat/__init__.py /apps/wifibluechat/__init__.py
+    $ ampy -p /dev/tty.SLAB_USBtoUART put TR19-wifibluechat/apps/wifibluechat/info.json /apps/wifibluechat/info.json
     $ ampy -p /dev/tty.SLAB_USBtoUART put TR19-wifibluechat/menu.json /menu.json
 
 After uploading its a good idea to check that your code is there:
