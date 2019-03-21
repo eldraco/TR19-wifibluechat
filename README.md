@@ -3,6 +3,7 @@
 A Bluetooth chat for the Troopers 19 Badge.
 
 Before running ampy, make sure you have connection to your badge, by:
+
     - Connecting the USB of the badge to your computer
     - Running
         $ ampy -p /dev/tty.SLAB_USBtoUART ls
