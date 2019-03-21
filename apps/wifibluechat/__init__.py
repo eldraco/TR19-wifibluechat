@@ -73,13 +73,13 @@ class FindOthersScreen(screen.Screen):
 	addr = socket.getaddrinfo(host, 80)[0][-1]
 	s = socket.socket()
 	s.connect(addr)
-	s.send(bytes('hola de sebas' % (path, host), 'utf8'))
+	s.send(bytes('hola de sebas', 'utf8'))
         self.display.text('Receiving...', 0, y=10, wrap=display.WRAP_INDENT,update=True)
 	data = s.recv(100)
         self.display.text(str(data), 0, y=20, wrap=display.WRAP_INDENT,update=True)
 
-        # Request page
         """
+        # Request page
         page = http_get('http://192.168.4.1/')
         if page:
             self.display.fill(display.BACKGROUND)
