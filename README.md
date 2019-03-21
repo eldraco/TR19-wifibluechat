@@ -1,8 +1,8 @@
-# TR19-bluechat
+# TR19-wifibluechat
 
 Version: 0.1
 
-A Bluetooth chat for the Troopers 19 Badge.
+A Wifi and Bluetooth chat for the Troopers 19 Badge.
 
 Before running ampy, make sure you have connection to your badge, by:
 
@@ -16,10 +16,14 @@ Before running ampy, make sure you have connection to your badge, by:
 ## Install instructions 
     $ git clone https://github.com/eldraco/TR19-bluechat.git
 
-    $ ampy -p /dev/tty.SLAB_USBtoUART mkdir /apps/bluechat
-    $ ampy -p /dev/tty.SLAB_USBtoUART put TR19-bluechat/apps/bluechat/__init__.py /apps/bluechat/__init__.py
-    $ ampy -p /dev/tty.SLAB_USBtoUART put TR19-bluechat/apps/bluechat/info.json /apps/bluechat/info.json
-    $ ampy -p /dev/tty.SLAB_USBtoUART put TR19-bluechat/menu.json /menu.json
+    $ ampy -p /dev/tty.SLAB_USBtoUART mkdir /apps/wifibluechat
+    $ ampy -p /dev/tty.SLAB_USBtoUART put TR19-wifibluechat/apps/bluechat/__init__.py /apps/wifibluechat/__init__.py
+    $ ampy -p /dev/tty.SLAB_USBtoUART put TR19-wifibluechat/apps/bluechat/info.json /apps/wifibluechat/info.json
+    $ ampy -p /dev/tty.SLAB_USBtoUART put TR19-wifibluechat/menu.json /menu.json
+
+After uploading its a good idea to check that your code is there:
+
+    $ ampy -p /dev/tty.SLAB_USBtoUART get /apps/wifibluechat/__init__.py
 
 ## Roadmap
 
