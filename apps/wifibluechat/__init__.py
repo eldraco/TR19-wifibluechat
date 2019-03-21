@@ -57,23 +57,30 @@ class FindOthersScreen(screen.Screen):
                 break
         # connect
         nic.connect('latinos-badge', 'chingatumadre')
-        self.display.fill(display.BACKGROUND)
-        ip = nic.ifconfig()[0]
-        self.display.text('Connected! We have IP {}'.format(ip), 0, y=0, wrap=display.WRAP_INDENT,update=True)
+        if not nic.isconnected():
+            return self.back()
+        #self.display.fill(display.BACKGROUND)
+        #ip = nic.ifconfig()[0]
+        #self.display.text('Connected! We have IP {}'.format(ip), 0, y=0, wrap=display.WRAP_INDENT,update=True)
         
         # Send text
         self.display.fill(display.BACKGROUND)
         self.display.text('Sending...', 0, y=0, wrap=display.WRAP_INDENT,update=True)
+	s = socket.socket()
         host = '192.168.4.1'
 	addr = socket.getaddrinfo(host, 80)[0][-1]
-	s = socket.socket()
 	s.connect(addr)
-        while True:
-            s.send(bytes('hola de sebas', 'utf8'))
-            self.display.text('Receiving...', 0, y=10, wrap=display.WRAP_INDENT,update=True)
-            data = s.recv(100)
-            self.display.text(str(data), 0, y=20, wrap=display.WRAP_INDENT,update=True)
+        self.display.text('Done...', 0, y=0, wrap=display.WRAP_INDENT,update=True)
 
+        #while True:
+        """
+        s.send(bytes('hola de sebas', 'utf8'))
+        self.display.text('Receiving...', 0, y=10, wrap=display.WRAP_INDENT,update=True)
+        data = s.recv(100)
+        self.display.text(str(data), 0, y=20, wrap=display.WRAP_INDENT,update=True)
+
+        return self.back()
+        """
 
 
     def on_text(self,event):
