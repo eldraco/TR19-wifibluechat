@@ -10,4 +10,4 @@
     $ ampy -p /dev/tty.SLAB_USBtoUART put TR19-bluechat/apps/bluechat/info.json /apps/bluechat/info.json
     $ ampy -p /dev/tty.SLAB_USBtoUART put TR19-bluechat/menu.json /menu.json
 
- ```
+    ```
