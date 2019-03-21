@@ -94,9 +94,51 @@ class FindOthersScreen(screen.Screen):
 
 class ActivateScreen(screen.Screen):
 
-    def update(self):
+   def update(self):
         self.display.fill(display.BACKGROUND)
-        self.display.text('Activating your Wifi...', 0, y=0, wrap=display.WRAP_INDENT,update=True)
+        self.display.text('Activating WiFi Server...', 0, y=0, wrap=display.WRAP_INDENT,update=True)
+
+        # Create the nic object
+        nic = network.WLAN(network.AP_IF)
+        nic2 = network.WLAN(network.STA_IF)
+        if nic.isconnected():
+            nic.disconnect()
+        if nic2.isconnected():
+            nic2.disconnect()
+        if nic.active():
+            nic.active(False)
+        if nic2.active():
+            nic2.active(False)
+
+        nic.active(True)
+        nic.config(essid="latinos-badge", password="chingatumadre", authmode=3)
+        
+        time.sleep(1)
+        if nic.active():
+            self.display.fill(display.BACKGROUND)
+            self.display.text('Running!', 0, y=0, wrap=display.WRAP_INDENT,update=True)
+            ip = nic.ifconfig()[0]
+            self.display.text(str(ip), 0, y=10, wrap=display.WRAP_INDENT,update=True)
+
+            addr = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
+            s = socket.socket()
+            s.bind(addr)
+            s.listen(1)
+            msg = "Hola desde Mexico"
+            while True:
+                cl, addr = s.accept()
+                cl.send(msg)
+                data = cl.recv(100)
+                if data:
+                    print(str(data, 'utf8'), end='')
+                else:
+                    break
+                s.close()
+        else:
+            self.display.fill(display.BACKGROUND)
+            self.display.text('Not Running... :-(', 0, y=0, wrap=display.WRAP_INDENT,update=True)
+        
+        return self.back()
 
     def on_text(self,event):
         if event.value is None:
