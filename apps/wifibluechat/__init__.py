@@ -26,66 +26,68 @@ class StartScreen(screen.Screen):
             return Kernel.ACTION_LOAD_SCREEN, 2
 
 class FindOthersScreen(screen.Screen):
-
-    def http_get(url):
-	_, _, host, path = url.split('/', 3)
-	addr = socket.getaddrinfo(host, 80)[0][-1]
-	s = socket.socket()
-	s.connect(addr)
-	s.send(bytes('GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n' % (path, host), 'utf8'))
-	while True:
-	    data = s.recv(100)
-	    if data:
-		print(str(data, 'utf8'), end='')
-	    else:
-		break
-	s.close()
+    """
+    self.text
+    """
 
     def update(self):
         self.display.fill(display.BACKGROUND)
         self.display.text('Finding the top 5 badges around you...', 0, y=0, wrap=display.WRAP_INDENT,update=True)
+        self.input.get_user_input(self,1,title='Send:',title_wrap=display.WRAP_INDENT)
+        self.display.text(self.response, 1, y=0, wrap=display.WRAP_INDENT,update=True)
 
         # Create the nic object
         nic = network.WLAN(network.STA_IF)
         nic.active(True)
         aps = nic.scan()
-        for i in range(len(aps)):
+        #for i in range(len(aps)):
+        for i in range(0,5):
             text = str(aps[i][0].decode('utf-8'))
             pos = 10* (i + 1)
             self.display.text(text, 0, y=pos, wrap=display.WRAP_INDENT,update=True)
-            if i > 3:
-                break
         # connect
+        self.display.text('Connecting to your pear...', 0, y=60, wrap=display.WRAP_INDENT,update=True)
         nic.connect('latinos-badge', 'chingatumadre')
+
         if not nic.isconnected():
-            return self.back()
-        #self.display.fill(display.BACKGROUND)
-        #ip = nic.ifconfig()[0]
-        #self.display.text('Connected! We have IP {}'.format(ip), 0, y=0, wrap=display.WRAP_INDENT,update=True)
+            return Kernel.ACTION_LOAD_SCREEN, 0
+        self.display.fill(display.BACKGROUND)
+        ip = str(nic.ifconfig())
+        self.display.text('Connected to WiFi! We have IP {}'.format(ip), 0, y=00, wrap=display.WRAP_INDENT,update=True)
+        time.sleep(1)
         
         # Send text
         self.display.fill(display.BACKGROUND)
-        self.display.text('Sending...', 0, y=0, wrap=display.WRAP_INDENT,update=True)
 	s = socket.socket()
         host = '192.168.4.1'
 	addr = socket.getaddrinfo(host, 80)[0][-1]
 	s.connect(addr)
-        self.display.text('Done...', 0, y=0, wrap=display.WRAP_INDENT,update=True)
+        self.display.text('Connected to server...', 0, y=0, wrap=display.WRAP_INDENT,update=True)
 
-        #while True:
-        """
-        s.send(bytes('hola de sebas', 'utf8'))
-        self.display.text('Receiving...', 0, y=10, wrap=display.WRAP_INDENT,update=True)
-        data = s.recv(100)
-        self.display.text(str(data), 0, y=20, wrap=display.WRAP_INDENT,update=True)
 
-        return self.back()
-        """
+        pos = 20
+        while True:
+            # Send chat
+            self.display.text('Sending...', 0, y=pos, wrap=display.WRAP_INDENT,update=True)
+            s.send(bytes('hola de sebas', 'utf8'))
+            #s.send(data)
+            self.display.text('Receiving...', 0, y=pos+10, wrap=display.WRAP_INDENT,update=True)
+            data = s.recv(100)
+            self.display.text(str(data), 0, y=pos+20, wrap=display.WRAP_INDENT,update=True)
+            pos += 30
+
+        return Kernel.ACTION_LOAD_SCREEN, 0
 
 
     def on_text(self,event):
         if event.value is None:
             return self.back()
+        self.response = ''
+        value = event.value.lower()
+        if value == "":
+            return Kernel.ACTION_RELOAD
+        self.response = value
+        return Kernel.ACTION_RELOAD
 
     def back(self, event):
         self.RENDER = True
