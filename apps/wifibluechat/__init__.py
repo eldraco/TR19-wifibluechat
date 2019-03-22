@@ -96,7 +96,7 @@ class FindOthersScreen(screen.Screen):
 
 class ActivateScreen(screen.Screen):
 
-   def update(self):
+    def update(self):
         self.display.fill(display.BACKGROUND)
         self.display.text('Activating WiFi Server...', 0, y=0, wrap=display.WRAP_INDENT,update=True)
 
@@ -117,30 +117,40 @@ class ActivateScreen(screen.Screen):
         
         time.sleep(1)
         if nic.active():
-            self.display.fill(display.BACKGROUND)
-            self.display.text('Running!', 0, y=0, wrap=display.WRAP_INDENT,update=True)
             ip = nic.ifconfig()[0]
-            self.display.text(str(ip), 0, y=10, wrap=display.WRAP_INDENT,update=True)
-
+            self.display.fill(display.BACKGROUND)
+            self.display.text('Running Server:'+str(ip), 0, y=0, wrap=display.WRAP_INDENT,update=True)
             addr = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
             s = socket.socket()
             s.bind(addr)
             s.listen(1)
             msg = "Hola desde Mexico"
+            conn, addr = s.accept()
+            ydata = 20
+            data = ""
+            tdata = ""
             while True:
-                cl, addr = s.accept()
-                cl.send(msg)
-                data = cl.recv(100)
-                if data:
-                    print(str(data, 'utf8'), end='')
-                else:
+                #cl.send(msg)
+                data = conn.recv(100)
+                if not data:
                     break
-                s.close()
+                else:
+                    if data != tdata:
+                        conn.sendall(msg)
+                        tdata = data
+                        print(str(data, 'utf8'), end='')
+                        self.display.text("Receiving: "+str(data), 0, y=ydata, wrap=display.WRAP_INDENT,update=True)
+                        ydata += 10
+                        self.display.text("Sending: "+str(msg), 0, y=ydata, wrap=display.WRAP_INDENT,update=True)
+                        ydata += 10
+            conn.close()
         else:
             self.display.fill(display.BACKGROUND)
             self.display.text('Not Running... :-(', 0, y=0, wrap=display.WRAP_INDENT,update=True)
         
-        return self.back()
+        #return self.back()
+        self.RENDER = True
+        return Kernel.ACTION_LOAD_SCREEN, 0
 
     def on_text(self,event):
         if event.value is None:
